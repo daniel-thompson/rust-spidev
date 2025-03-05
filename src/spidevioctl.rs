@@ -96,6 +96,17 @@ impl<'a, 'b> spi_ioc_transfer<'a, 'b> {
         }
     }
 
+    /// Create a turnaround transfer
+    /// This is useful for half-duplex SPI controllers. `len` give the length
+    /// of the turnaround measured in byte equivalent time units (e.g. the
+    /// length of time needed to `read_write` the same number of bytes)
+    pub fn turnaround(len: u32) -> Self {
+        spi_ioc_transfer {
+            len,
+            ..Default::default()
+        }
+    }
+
     /// Create a read/write transfer.
     /// Note that the `tx_buf` and `rx_buf` must be the same length.
     pub fn read_write(tx_buf: &'a [u8], rx_buf: &'b mut [u8]) -> Self {
