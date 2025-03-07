@@ -233,14 +233,16 @@ impl Spidev {
         if let Some(bpw) = options.bits_per_word {
             spidevioctl::set_bits_per_word(fd, bpw)?;
         }
-        if let Some(speed) = options.max_speed_hz {
-            spidevioctl::set_max_speed_hz(fd, speed)?;
-        }
         if let Some(lsb_first) = options.lsb_first {
             spidevioctl::set_lsb_first(fd, lsb_first)?;
         }
         if let Some(spi_mode_flags) = options.spi_mode {
             spidevioctl::set_mode(fd, spi_mode_flags)?;
+        }
+        // It is hateful... but if we don't do this last then it will get lost
+        // since most kernels don't save the max speed between ioctl() calls.
+        if let Some(speed) = options.max_speed_hz {
+            spidevioctl::set_max_speed_hz(fd, speed)?;
         }
         Ok(())
     }
